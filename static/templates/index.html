@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Блог — Главная</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen flex flex-col">
+
+<header class="bg-gray-900 shadow-lg py-4 w-full">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <h1 class="text-2xl font-bold">
+            <a href="/" class="hover:text-blue-300">Блог</a>
+        </h1>
+        <nav class="flex items-center">
+            {{ if .user }}
+            <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
+            <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
+            <form action="/logout" method="POST" class="inline">
+                <button type="submit" class="text-blue-300 hover:text-white px-3">Выйти</button>
+            </form>
+            {{ else }}
+            <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
+            <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
+            {{ end }}
+        </nav>
+    </div>
+</header>
+
+<main class="container mx-auto px-6 py-10 flex-1">
+    <h2 class="text-4xl font-extrabold text-center mb-6">Последние статьи</h2>
+
+    <!-- Адаптивная сетка -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {{ range .posts }}
+        <article class="bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition w-full max-w-sm mx-auto">
+            <!-- Картинка заполняет всю ширину карточки, а высота фиксирована -->
+            <img
+                    src="/{{ .CoverURL }}"
+                    alt="Изображение статьи"
+                    class="w-full h-48 object-cover"
+            />
+            <div class="p-5 flex flex-col">
+                <h3 class="text-xl font-semibold">{{ .Title }}</h3>
+                <p class="text-gray-400 mt-2">
+                    {{ shorten ( stripHTML .Body ) 200 }}
+                </p>
+                <a href="/article/{{ .Id }}" class="mt-4 inline-block text-blue-500 hover:underline">
+                    Читать далее →
+                </a>
+            </div>
+        </article>
+        {{ else }}
+        <p class="text-center w-full">Пока нет опубликованных статей.</p>
+        {{ end }}
+    </div>
+</main>
+
+</body>
+</html>

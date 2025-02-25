@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать статью – Блог</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.7/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <!-- SweetAlert2 для уведомлений -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Подключите внешний CSS, либо вставьте сюда (пример ниже) -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+
+    <!-- Если вы хотите всё inline, вот пример стилей: -->
+    <style>
+        /* Общие стили */
+        body {
+            background-color: #111827;
+            color: #f1f5f9;
+            font-family: sans-serif;
+        }
+        header {
+            background-color: #1f2937;
+            padding: 1rem;
+        }
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        main .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* Стили для Markdown-превью */
+        .markdown-body {
+            background-color: transparent !important;
+            color: #f1f5f9;
+            max-width: 800px;
+            margin: auto;
+            padding: 1rem;
+            line-height: 1.6;
+        }
+        .markdown-body h1 {
+            text-align: left !important;
+            margin-top: 2rem;  /* самый большой отступ для h1 */
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body h2 {
+            text-align: left !important;
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body h3 {
+            text-align: left !important;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body h4 {
+            text-align: left !important;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body h5 {
+            text-align: left !important;
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body h6 {
+            text-align: left !important;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            border-bottom: none !important;
+            text-decoration: none;
+        }
+
+        .markdown-body hr {
+            border: none;
+            border-top: 1px solid rgba(241, 245, 249, 0.1);
+            margin: 1rem 0;
+        }
+        .markdown-body p {
+            margin-bottom: 1rem;
+        }
+        .markdown-body ul {
+            list-style-type: circle !important; /* кружочки для неупорядоченных списков */
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        .markdown-body ol {
+            list-style-type: decimal !important; /* числа для упорядоченных списков */
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+        .markdown-body li {
+            margin-bottom: 0.5rem;
+        }
+        .markdown-body table {
+            background-color: #1e293b !important;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        .markdown-body table th,
+        .markdown-body table td {
+            background-color: #1e293b !important;
+            color: #f8f8f2 !important;
+            border: 1px solid #4b5563;
+            padding: 8px;
+            text-align: left;
+        }
+        .markdown-body pre,
+        .markdown-body pre code,
+        .hljs {
+            background-color: #1e293b !important;
+            color: #f8f8f2 !important;
+            border-radius: 0.5rem;
+        }
+        .markdown-body pre {
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            background-color: #374151;
+            color: #f9fafb;
+            font-size: 0.75rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .copy-btn:hover {
+            opacity: 1;
+        }
+        .markdown-body img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-white">
+<!-- Шапка -->
+<header class="shadow-sm w-full">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <h1 class="text-2xl font-bold">
+            <a href="/" class="hover:text-blue-300">Блог</a>
+        </h1>
+        <nav class="flex items-center">
+            {{ if .user }}
+            <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
+            <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
+            <form action="/logout" method="POST" class="inline">
+                <button type="submit" class="text-blue-300 hover:text-white px-3">Выйти</button>
+            </form>
+            {{ else }}
+            <a href="/static" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
+            <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
+            {{ end }}
+        </nav>
+    </div>
+</header>
+
+<!-- Основной контент -->
+<main class="container mx-auto flex-1 px-6 py-8">
+    <div class="flex flex-col md:flex-row gap-6">
+        <!-- Левая колонка: форма создания статьи -->
+        <form action="/article/create" method="POST" id="articleForm" enctype="multipart/form-data" class="flex-1 space-y-6">
+            <input type="hidden" name="title" id="hiddenTitle" />
+            <input type="hidden" name="body" id="hiddenBody" />
+
+            <!-- Заголовок -->
+            <div>
+                <label for="titleEditor" class="block text-gray-400 mb-1">Заголовок</label>
+                <div id="titleEditor" contenteditable="true" class="w-full text-3xl font-bold bg-transparent border-b border-gray-700 focus:outline-none pb-2" placeholder="Введите заголовок..."></div>
+            </div>
+
+            <!-- Обложка -->
+            <div>
+                <label for="cover" class="block text-gray-400 mb-1">Обложка (картинка)</label>
+                <input type="file" id="cover" name="cover" class="text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:bg-blue-600 file:text-white hover:file:bg-blue-500 focus:outline-none" />
+            </div>
+
+            <!-- Markdown-текст -->
+            <div>
+                <label for="markdownEditor" class="block text-gray-400 mb-1">Текст статьи (Markdown)</label>
+                <div id="markdownEditor" contenteditable="true" class="min-h-[160px] w-full border border-gray-700 rounded p-3 text-base bg-transparent" placeholder="Введите содержимое в Markdown..."></div>
+                <p class="text-sm text-gray-500 mt-1">Превью обновляется каждые <strong>500мс</strong>.</p>
+            </div>
+
+            <!-- Кнопка "Опубликовать" -->
+            <div class="pt-4 text-right">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded shadow-md transition">Опубликовать</button>
+            </div>
+        </form>
+
+        <!-- Правая колонка: превью -->
+        <div class="flex-1 pl-0 md:pl-6 pt-6 md:pt-0">
+            <h2 class="text-lg font-semibold text-gray-300 border-b border-gray-700 pb-2 mb-3">Предварительный просмотр</h2>
+            <div id="preview" class="markdown-body"></div>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    let debounceTimer = null;
+    const markdownEditor = document.getElementById('markdownEditor');
+    const preview = document.getElementById('preview');
+
+    markdownEditor.addEventListener('input', () => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(sendPreviewRequest, 500);
+    });
+
+    function sendPreviewRequest() {
+        const mdText = markdownEditor.innerText;
+        fetch('/article/preview', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ markdown: mdText })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Ошибка при рендере превью');
+                return res.json();
+            })
+            .then(data => {
+                preview.innerHTML = data.html;
+                hljs.highlightAll();
+                document.querySelectorAll('#preview pre code').forEach(addCopyButton);
+            })
+            .catch(err => console.error('Ошибка превью:', err));
+    }
+
+    function addCopyButton(codeBlock) {
+        if (codeBlock.parentElement.querySelector('.copy-btn')) return;
+        const btn = document.createElement('button');
+        btn.textContent = 'Copy';
+        btn.className = 'copy-btn';
+        btn.addEventListener('click', () => {
+            navigator.clipboard.writeText(codeBlock.innerText)
+                .then(() => {
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => btn.textContent = 'Copy', 1500);
+                });
+        });
+        codeBlock.parentElement.style.position = 'relative';
+        codeBlock.parentElement.appendChild(btn);
+    }
+
+    document.getElementById('articleForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('hiddenTitle').value = document.getElementById('titleEditor').innerText.trim();
+        document.getElementById('hiddenBody').value  = document.getElementById('markdownEditor').innerText.trim();
+
+        const formData = new FormData(e.target);
+
+        fetch('/article/create', {
+            method: 'POST',
+            body: formData
+        })
+            .then(async res => {
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ошибка',
+                        text: errorData.message || 'Не удалось создать статью',
+                        width: '300px',
+                        background: '#1f2937',
+                        color: '#f1f5f9',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                } else {
+                    const result = await res.json();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Успех',
+                        text: 'Статья успешно создана',
+                        width: '300px',
+                        background: '#1f2937',
+                        color: '#f1f5f9',
+                        confirmButtonColor: '#3b82f6',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = result.url || '/article';
+                    });
+                }
+            })
+            .catch(err => {
+                console.error("Ошибка при отправке запроса:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                    text: 'Произошла ошибка при отправке запроса. Попробуйте позже.',
+                    width: '300px',
+                    background: '#1f2937',
+                    color: '#f1f5f9',
+                    confirmButtonColor: '#3b82f6'
+                });
+            });
+    });
+</script>
+</body>
+</html>

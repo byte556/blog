@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Blog | Registration</title>
+    <!-- Подключаем Tailwind CSS через CDN (один способ, чтобы избежать конфликтов) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Опциональные кастомные переходы */
+        .transition-base {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body  class="bg-gray-950 flex flex-col items-center ">
+
+
+<header class="bg-gray-900 shadow-lg py-4 w-full">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <h1 class="text-2xl font-bold">
+            <a href="/" class=" text-white hover:text-blue-300">Блог</a>
+        </h1>
+        <nav class="flex items-center">
+
+            {{ if .user }}<!-- Ссылка для добавления поста -->
+            <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
+            <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
+            <form action="/logout" method="POST" class="inline">
+                <button type="submit" class="text-blue-300 hover:text-white px-3">
+                    Выйти
+                </button>
+            </form>
+            {{ else }}
+            <a href="/static" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
+            <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
+            {{ end }}
+        </nav>
+    </div>
+</header>
+
+
+
+{{ if .user }}
+<!-- Если пользователь уже зарегистрирован, показываем сообщение с кнопкой "Выйти" -->
+<div class="max-w-md w-full bg-gray-800 shadow-2xl rounded-lg p-9 mt-8 text-center">
+    <h1 class="text-white text-4xl font-extrabold tracking-wide mb-2">Вы уже зарегистрированы</h1>
+    <div class="border-b border-gray-700 w-60 mx-auto mb-4"></div>
+    <p class="text-gray-400 mb-6">Если хотите выйти, нажмите кнопку ниже.</p>
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <form action="/logout" method="POST" class="w-full sm:w-auto">
+            <button type="submit" class="w-full py-3 p-9     bg-red-600 text-white rounded font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-base">
+                Выйти
+            </button>
+        </form>
+        <a href="/" class="w-full sm:w-auto">
+            <button type="button" class="w-full py-3 p-9  bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-base">
+                Главное меню
+            </button>
+        </a>
+    </div>
+</div>
+
+{{ else }}
+<!-- Форма регистрации, если пользователь не авторизован -->
+<div class="max-w-md w-full bg-gray-800 shadow-2xl rounded-lg p-9 mt-8">
+    <h1 class="text-white text-center text-4xl font-extrabold tracking-wide mb-2">Blog</h1>
+    <div class="border-b border-gray-700 w-60 mx-auto mb-4"></div>
+    <h3 class="text-white text-center text-xl font-medium">Регистрация</h3>
+
+    <!-- Registration Form -->
+    <form class="space-y-3" method="post" action="/sign-up">
+        <div>
+            <label for="login" class="block text-gray-400 mb-1">Логин</label>
+            <input type="text" id="login" name="username"
+                   class="transition-base w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"/>
+        </div>
+        <div>
+            <label for="password" class="block text-gray-400 mb-1">Пароль</label>
+            <div class="relative">
+                <input type="password" id="password" name="password" required
+                       class="transition-base w-full p-3 pr-10 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"/>
+                <button type="button" id="togglePassword" class="absolute right-2 top-2 text-gray-400 hover:text-gray-200 focus:outline-none transition-base" aria-label="Show or Hide Password" onclick="togglePasswordVisibility()">
+                    👁
+                </button>
+            </div>
+        </div>
+        <div class="pt-12">
+            <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-base">
+                Зарегистрироваться
+            </button>
+        </div>
+        <div class="transition-base flex flex-col items-center gap-y-2 pt-4">
+            <span class="text-gray-400 text-sm">Уже есть аккаунт?</span>
+            <a href="/sign-in" class="text-blue-500 hover:underline hover:text-blue-400 transition-base">
+                Вход
+            </a>
+        </div>
+    </form>
+</div>
+{{ end }}
+
+<!-- Скрипт для переключения видимости пароля -->
+<script>
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById('password');
+        passwordField.type = (passwordField.type === 'password') ? 'text' : 'password';
+    }
+</script>
+</body>
+</html>

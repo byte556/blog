@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка | Блог</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center items-center text-center">
+
+<!-- Ошибка -->
+<h1 class="text-6xl font-extrabold text-red-500 drop-shadow-lg animate-pulse">Ошибка</h1>
+<p class="text-gray-400 text-lg mt-4">Что-то пошло не так... Попробуйте позже.</p>
+
+<!-- Вывод ошибки из backend -->
+<p class="bg-gray-800 text-red-400 text-sm mt-3 px-4 py-2 rounded-lg shadow-lg">
+    {{ .error }}
+</p>
+
+<!-- Кнопка на главную -->
+<a href="/" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md text-lg
+        font-semibold hover:bg-blue-500 hover:scale-105 transition-all duration-300">
+    Вернуться на главную
+</a>
+
+</body>
+</html>
