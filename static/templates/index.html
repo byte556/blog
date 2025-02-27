@@ -41,11 +41,11 @@
                     <img src="/{{ .CoverURL }}" alt="Изображение статьи" class="w-full h-48 object-cover transform transition duration-500 group-hover:scale-105" />
                 </div>
                 <div class="p-5 flex flex-col">
-                    <h3 class="text-xl font-semibold group-hover:text-blue-400 transition duration-300">{{ .Title }}</h3>
+                    <h3 class="text-xl font-semibold hover:text-blue-400 transition duration-300">{{ .Title }}</h3>
                     <p class="text-gray-400 mt-2">
                         {{ shorten ( stripHTML .Body ) 200 }}
                     </p>
-                    <span class="mt-4 inline-block text-blue-500 group-hover:underline">Читать далее →</span>
+                    <span class="mt-4 inline-block text-blue-500 hover:underline">Читать далее →</span>
                 </div>
             </a>
         </article>
