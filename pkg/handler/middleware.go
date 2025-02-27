@@ -49,8 +49,13 @@ func (h *Handler) getUser(context *gin.Context) (*models.User, error) {
 }
 func (h *Handler) AuthRequired(c *gin.Context) {
 	session := sessions.Default(c)
-	id := session.Get("user")
+	id := session.Get("id")
 	if id == nil {
+		c.Redirect(http.StatusFound, "/sign-in")
+		c.Abort()
+		return
+	}
+	if id == "" {
 		c.Redirect(http.StatusFound, "/sign-in")
 		c.Abort()
 		return
