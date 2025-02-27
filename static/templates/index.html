@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-950 text-white min-h-screen flex flex-col">
 <header class="bg-gray-900 shadow-lg py-4 w-full">
-    <div class="container mx-auto flex justify-between items-center px-6">
+    <div class="container mx-auto flex justify-between items-center px-4 sm:px-6">
         <h1 class="text-2xl font-bold">
             <a href="/" class="text-white hover:text-blue-300">Блог</a>
         </h1>
@@ -30,10 +30,12 @@
         </nav>
     </div>
 </header>
-<main class="container mx-auto px-6 py-10 flex-1">
+<main class="container mx-auto px-4 sm:px-6 py-10 flex-1 ">
     <h2 class="text-4xl font-extrabold text-center mb-6">Последние статьи</h2>
     <!-- Адаптивная сетка -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class=" justify-items-start">
+
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 justify-items-start">
         {{ range .posts }}
         <article class="group bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition w-full max-w-sm mx-auto">
             <a href="/article/{{ .Id }}" class="block">
@@ -52,6 +54,7 @@
         {{ else }}
         <p class="text-center w-full">Пока нет опубликованных статей.</p>
         {{ end }}
+    </div>
     </div>
 </main>
 </body>
