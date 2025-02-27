@@ -26,12 +26,13 @@
             <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
             <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
             <form action="/logout" method="POST" class="inline">
+                <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
                 <button type="submit" class="text-blue-300 hover:text-white px-3">
                     Выйти
                 </button>
             </form>
             {{ else }}
-            <a href="/static" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
             <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
             <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
             {{ end }}
@@ -70,6 +71,7 @@
 
     <!-- Registration Form -->
     <form class="space-y-3" method="post" action="/sign-up">
+        <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
         <div>
             <label for="login" class="block text-gray-400 mb-1">Логин</label>
             <input type="text" id="login" name="username"

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	csrf "github.com/utrack/gin-csrf"
 	"net/http"
 )
 
@@ -14,5 +15,5 @@ func (h *Handler) homePage(context *gin.Context) {
 
 	posts, err := h.service.GetLastArticles(10)
 
-	context.HTML(http.StatusOK, "index.html", gin.H{"user": user, "posts": posts})
+	context.HTML(http.StatusOK, "index.html", gin.H{"user": user, "posts": posts, "csrf_token": csrf.GetToken(context)})
 }

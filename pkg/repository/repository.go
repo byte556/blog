@@ -17,12 +17,19 @@ type Article interface {
 	DeleteArticle(id int) error
 	GetLastArticles(count int) ([]models.Article, error)
 }
+type Comment interface {
+	CreateComment(userId, articleId int, authorName, text string) (int, error)
+	GetAllCommentByArticleId(id int) ([]models.Comment, error)
+	//UpdateArticle(article models.Comment) error
+	//DeleteArticle(id int) error
+}
 
 type Repository struct {
 	Authorization
 	Article
+	Comment
 }
 
 func NewRepository(db *SQLite) *Repository {
-	return &Repository{db, db}
+	return &Repository{db, db, db}
 }

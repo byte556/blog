@@ -39,6 +39,16 @@ func (a *SQLite) InitTables() error {
 		is_posted BOOLEAN DEFAULT 0,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 		FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+	);
+	CREATE TABLE IF NOT EXISTS comments (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		user_id INTEGER NOT NULL,
+		article_id INTEGER NOT NULL UNIQUE,
+		author_name TEXT NOT NULL,
+		text TEXT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+		FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 	);`
 	_, err := a.db.Exec(query)
 	return err

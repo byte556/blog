@@ -11,7 +11,6 @@ type Authorization interface {
 	SignUp(username, password string) error
 	GetUser(id int) (models.User, error)
 }
-
 type Article interface {
 	ConvertMarkdownToHTML(markdown string) (string, error)
 	GetArticleByID(id int) (models.Article, error)
@@ -20,12 +19,16 @@ type Article interface {
 	UpdateArticle()
 	GetLastArticles(count int) ([]models.Article, error)
 }
-
+type Comment interface {
+	CreateComment(title, authorName string, articleId, authorId int) (int, error)
+	GetAllCommentsFromArticle(articleId int) ([]models.Comment, error)
+}
 type Service struct {
 	Authorization
 	Article
+	Comment
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{Authorization: NewAuthService(repos), Article: NewArticleService(repos)}
+	return &Service{Authorization: NewAuthService(repos), Article: NewArticleService(repos), Comment: NewCommentService(repos)}
 }

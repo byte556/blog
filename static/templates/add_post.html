@@ -172,27 +172,30 @@
 </head>
 <body class="min-h-screen flex flex-col text-white">
 <!-- Шапка -->
-<header class="shadow-sm w-full">
+<header class="bg-gray-900 shadow-lg py-4 w-full">
     <div class="container mx-auto flex justify-between items-center px-6">
         <h1 class="text-2xl font-bold">
-            <a href="/" class="hover:text-blue-300">Блог</a>
+            <a href="/" class=" text-white hover:text-blue-300">Блог</a>
         </h1>
         <nav class="flex items-center">
-            {{ if .user }}
+
+            {{ if .user }}<!-- Ссылка для добавления поста -->
             <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
             <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
             <form action="/logout" method="POST" class="inline">
-                <button type="submit" class="text-blue-300 hover:text-white px-3">Выйти</button>
+                <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
+                <button type="submit" class="text-blue-300 hover:text-white px-3">
+                    Выйти
+                </button>
             </form>
             {{ else }}
-            <a href="/static" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
             <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
             <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
             {{ end }}
         </nav>
     </div>
 </header>
-
 <!-- Основной контент -->
 <main class="container mx-auto flex-1 px-6 py-8">
     <div class="flex flex-col md:flex-row gap-6">
@@ -200,6 +203,8 @@
         <form action="/article/create" method="POST" id="articleForm" enctype="multipart/form-data" class="flex-1 space-y-6">
             <input type="hidden" name="title" id="hiddenTitle" />
             <input type="hidden" name="body" id="hiddenBody" />
+            <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
+            <input type="hidden" name="idempotencyToken" value="{{ .idempotencyToken }}">
 
             <!-- Заголовок -->
             <div>
@@ -247,9 +252,14 @@
 
     function sendPreviewRequest() {
         const mdText = markdownEditor.innerText;
+
+        const csrfToken = document.querySelector('input[name="_csrf"]').value;
         fetch('/article/preview', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken  // передаём CSRF-токен
+            },
             body: JSON.stringify({ markdown: mdText })
         })
             .then(res => {

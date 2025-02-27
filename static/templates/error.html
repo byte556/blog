@@ -9,7 +9,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center items-center text-center">
+<header class="bg-gray-900 shadow-lg py-4 w-full">
+    <div class="container mx-auto flex justify-between items-center px-6">
+        <h1 class="text-2xl font-bold">
+            <a href="/" class=" text-white hover:text-blue-300">Блог</a>
+        </h1>
+        <nav class="flex items-center">
 
+            {{ if .user }}<!-- Ссылка для добавления поста -->
+            <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
+            <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
+            <form action="/logout" method="POST" class="inline">
+                <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
+                <button type="submit" class="text-blue-300 hover:text-white px-3">
+                    Выйти
+                </button>
+            </form>
+            {{ else }}
+            <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
+            <a href="/sign-in" class="text-gray-300 hover:text-white px-3">Войти</a>
+            <a href="/sign-up" class="text-gray-300 hover:text-white px-3">Регистрация</a>
+            {{ end }}
+        </nav>
+    </div>
+</header>
 <!-- Ошибка -->
 <h1 class="text-6xl font-extrabold text-red-500 drop-shadow-lg animate-pulse">Ошибка</h1>
 <p class="text-gray-400 text-lg mt-4">Что-то пошло не так... Попробуйте позже.</p>

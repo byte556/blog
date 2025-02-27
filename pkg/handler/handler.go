@@ -6,7 +6,9 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/utrack/gin-csrf"
 	"html/template"
+	"net/http"
 )
 
 type Handler struct {
@@ -27,7 +29,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		Secure:   false,
 		HttpOnly: true,
 	})
+
+	// Добавляем middleware для сессий ПЕРЕД CSRF
 	router.Use(sessions.Sessions("session", store))
+
+	// Настройка CSRF
+	router.Use(csrf.Middleware(csrf.Options{
+		Secret: "your-csrf-secret",
+		ErrorFunc: func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", gin.H{"error": "CSRF token mismatch"})
+			c.Abort()
+			return
+		},
+	}))
 
 	// Подключаем наши функции для шаблонов
 	router.SetFuncMap(template.FuncMap{
@@ -55,10 +69,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		post.POST("/preview", h.articlePreview)
 		post.POST("/create", h.articleCreate)
-
+		post.POST("/:id/create", h.commentCreate) // Исправлено!
 		post.GET("/add", h.articleAddPage)
 		post.GET("/:id", h.articlePage)
 	}
-
 	return router
 }

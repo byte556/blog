@@ -24,11 +24,8 @@ func (serv *ArticleService) CreateArticle(title, body string, authorId int, file
 	if err != nil {
 		return 0, err
 	}
-	markdownBody, err := serv.ConvertMarkdownToHTML(body)
-	if err != nil {
-		return 0, err
-	}
-	return serv.repos.CreateArticle(title, markdownBody, authorId, fileName)
+
+	return serv.repos.CreateArticle(title, body, authorId, fileName)
 }
 func (serv *ArticleService) saveCoverFile(file *multipart.FileHeader) (string, error) {
 	ext := filepath.Ext(file.Filename)
