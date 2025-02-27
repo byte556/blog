@@ -4,6 +4,7 @@ import (
 	"Blog/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func (h *Handler) UserMiddleware(context *gin.Context) {
@@ -45,4 +46,14 @@ func (h *Handler) getUser(context *gin.Context) (*models.User, error) {
 	}
 
 	return &user, nil
+}
+func (h *Handler) AuthRequired(c *gin.Context) {
+	session := sessions.Default(c)
+	id := session.Get("user")
+	if id == nil {
+		c.Redirect(http.StatusFound, "/sign-in")
+		c.Abort()
+		return
+	}
+	c.Next()
 }

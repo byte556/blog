@@ -19,20 +19,16 @@
     <!-- SweetAlert2 для уведомлений -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- Подключите внешний CSS, либо вставьте сюда (пример ниже) -->
+    <!-- Подключите внешний CSS -->
     <link rel="stylesheet" href="/static/css/styles.css">
 
-    <!-- Если вы хотите всё inline, вот пример стилей: -->
+    <!-- Inline стили для Markdown и таблиц (фон изменён под стиль главной страницы) -->
     <style>
         /* Общие стили */
         body {
-            background-color: #111827;
+            /* Фон убран, теперь используется Tailwind класс bg-gray-950 */
             color: #f1f5f9;
             font-family: sans-serif;
-        }
-        header {
-            background-color: #1f2937;
-            padding: 1rem;
         }
         header h1 {
             font-size: 1.75rem;
@@ -43,7 +39,7 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-        /* Стили для Markdown-превью */
+        /* Стили для Markdown-превью, таблиц и кода */
         .markdown-body {
             background-color: transparent !important;
             color: #f1f5f9;
@@ -54,52 +50,26 @@
         }
         .markdown-body h1 {
             text-align: left !important;
-            margin-top: 2rem;  /* самый большой отступ для h1 */
+            margin-top: 2rem;
             margin-bottom: 0.75rem;
             border-bottom: none !important;
             text-decoration: none;
         }
-
-        .markdown-body h2 {
-            text-align: left !important;
-            margin-top: 1.75rem;
-            margin-bottom: 0.75rem;
-            border-bottom: none !important;
-            text-decoration: none;
-        }
-
-        .markdown-body h3 {
-            text-align: left !important;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            border-bottom: none !important;
-            text-decoration: none;
-        }
-
-        .markdown-body h4 {
-            text-align: left !important;
-            margin-top: 1.25rem;
-            margin-bottom: 0.75rem;
-            border-bottom: none !important;
-            text-decoration: none;
-        }
-
-        .markdown-body h5 {
-            text-align: left !important;
-            margin-top: 1rem;
-            margin-bottom: 0.75rem;
-            border-bottom: none !important;
-            text-decoration: none;
-        }
-
+        .markdown-body h2,
+        .markdown-body h3,
+        .markdown-body h4,
+        .markdown-body h5,
         .markdown-body h6 {
             text-align: left !important;
-            margin-top: 0.75rem;
             margin-bottom: 0.75rem;
             border-bottom: none !important;
             text-decoration: none;
         }
-
+        .markdown-body h2 { margin-top: 1.75rem; }
+        .markdown-body h3 { margin-top: 1.5rem; }
+        .markdown-body h4 { margin-top: 1.25rem; }
+        .markdown-body h5 { margin-top: 1rem; }
+        .markdown-body h6 { margin-top: 0.75rem; }
         .markdown-body hr {
             border: none;
             border-top: 1px solid rgba(241, 245, 249, 0.1);
@@ -109,12 +79,12 @@
             margin-bottom: 1rem;
         }
         .markdown-body ul {
-            list-style-type: circle !important; /* кружочки для неупорядоченных списков */
+            list-style-type: circle !important;
             margin: 1rem 0;
             padding-left: 1.5rem;
         }
         .markdown-body ol {
-            list-style-type: decimal !important; /* числа для упорядоченных списков */
+            list-style-type: decimal !important;
             margin: 1rem 0;
             padding-left: 1.5rem;
         }
@@ -170,23 +140,19 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-white">
-<!-- Шапка -->
+<body class="bg-gray-950 text-white min-h-screen flex flex-col">
 <header class="bg-gray-900 shadow-lg py-4 w-full">
     <div class="container mx-auto flex justify-between items-center px-6">
         <h1 class="text-2xl font-bold">
-            <a href="/" class=" text-white hover:text-blue-300">Блог</a>
+            <a href="/" class="text-white hover:text-blue-300">Блог</a>
         </h1>
         <nav class="flex items-center">
-
-            {{ if .user }}<!-- Ссылка для добавления поста -->
+            {{ if .user }}
             <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
             <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
             <form action="/logout" method="POST" class="inline">
                 <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
-                <button type="submit" class="text-blue-300 hover:text-white px-3">
-                    Выйти
-                </button>
+                <button type="submit" class="text-blue-300 hover:text-white px-3">Выйти</button>
             </form>
             {{ else }}
             <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
@@ -196,7 +162,7 @@
         </nav>
     </div>
 </header>
-<!-- Основной контент -->
+
 <main class="container mx-auto flex-1 px-6 py-8">
     <div class="flex flex-col md:flex-row gap-6">
         <!-- Левая колонка: форма создания статьи -->
@@ -239,7 +205,6 @@
     </div>
 </main>
 
-
 <script>
     let debounceTimer = null;
     const markdownEditor = document.getElementById('markdownEditor');
@@ -252,13 +217,12 @@
 
     function sendPreviewRequest() {
         const mdText = markdownEditor.innerText;
-
         const csrfToken = document.querySelector('input[name="_csrf"]').value;
         fetch('/article/preview', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-Token': csrfToken  // передаём CSRF-токен
+                'X-CSRF-Token': csrfToken
             },
             body: JSON.stringify({ markdown: mdText })
         })
@@ -294,9 +258,7 @@
         e.preventDefault();
         document.getElementById('hiddenTitle').value = document.getElementById('titleEditor').innerText.trim();
         document.getElementById('hiddenBody').value  = document.getElementById('markdownEditor').innerText.trim();
-
         const formData = new FormData(e.target);
-
         fetch('/article/create', {
             method: 'POST',
             body: formData

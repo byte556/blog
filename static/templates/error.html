@@ -4,26 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ошибка | Блог</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex flex-col justify-center items-center text-center">
-<header class="bg-gray-900 shadow-lg py-4 w-full">
+<body class="bg-gray-950 text-white min-h-screen m-0 p-0">
+<header class="w-full bg-gray-900 shadow-lg py-4">
     <div class="container mx-auto flex justify-between items-center px-6">
         <h1 class="text-2xl font-bold">
-            <a href="/" class=" text-white hover:text-blue-300">Блог</a>
+            <a href="/" class="text-white hover:text-blue-300">Блог</a>
         </h1>
         <nav class="flex items-center">
-
-            {{ if .user }}<!-- Ссылка для добавления поста -->
+            {{ if .user }}
             <a href="/article/add" class="text-gray-300 hover:text-white px-3">Добавить пост</a>
             <a href="/profile/{{.user.Id}}" class="text-gray-300 hover:text-white px-3">{{ .user.Name }}</a>
             <form action="/logout" method="POST" class="inline">
                 <input type="hidden" name="_csrf" value="{{ .csrf_token }}">
-                <button type="submit" class="text-blue-300 hover:text-white px-3">
-                    Выйти
-                </button>
+                <button type="submit" class="text-blue-300 hover:text-white px-3">Выйти</button>
             </form>
             {{ else }}
             <a href="/" class="text-gray-300 hover:text-white px-3">Главная</a>
@@ -33,20 +28,15 @@
         </nav>
     </div>
 </header>
-<!-- Ошибка -->
-<h1 class="text-6xl font-extrabold text-red-500 drop-shadow-lg animate-pulse">Ошибка</h1>
-<p class="text-gray-400 text-lg mt-4">Что-то пошло не так... Попробуйте позже.</p>
-
-<!-- Вывод ошибки из backend -->
-<p class="bg-gray-800 text-red-400 text-sm mt-3 px-4 py-2 rounded-lg shadow-lg">
-    {{ .error }}
-</p>
-
-<!-- Кнопка на главную -->
-<a href="/" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md text-lg
-        font-semibold hover:bg-blue-500 hover:scale-105 transition-all duration-300">
-    Вернуться на главную
-</a>
-
+<main class="flex flex-col justify-center items-center text-center py-20">
+    <h1 class="text-6xl font-extrabold text-red-500 drop-shadow-lg animate-pulse">Ошибка</h1>
+    <p class="text-gray-400 text-lg mt-4">Что-то пошло не так... Попробуйте позже.</p>
+    <p class="bg-gray-800 text-red-400 text-sm mt-3 px-4 py-2 rounded-lg shadow-lg">
+        {{ .error }}
+    </p>
+    <a href="/" class="mt-6 inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md text-lg font-semibold hover:bg-blue-500 hover:scale-105 transition-all duration-300">
+        Вернуться на главную
+    </a>
+</main>
 </body>
 </html>

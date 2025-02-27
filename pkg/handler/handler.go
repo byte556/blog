@@ -70,7 +70,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		post.POST("/preview", h.articlePreview)
 		post.POST("/create", h.articleCreate)
 		post.POST("/:id/create", h.commentCreate) // Исправлено!
-		post.GET("/add", h.articleAddPage)
+		post.GET("/add", h.AuthRequired, h.articleAddPage)
 		post.GET("/:id", h.articlePage)
 	}
 	return router

@@ -43,7 +43,7 @@ func (a *SQLite) InitTables() error {
 	CREATE TABLE IF NOT EXISTS comments (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		user_id INTEGER NOT NULL,
-		article_id INTEGER NOT NULL UNIQUE,
+		article_id INTEGER NOT NULL,
 		author_name TEXT NOT NULL,
 		text TEXT NOT NULL,
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
